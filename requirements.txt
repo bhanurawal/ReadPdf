@@ -1,7 +1,6 @@
 streamlit
 streamlit_pdf_viewer
 langchain==0.0.350
-langchain-community==0.0.21
 sentence-transformers
 PyPDF2
 torch
