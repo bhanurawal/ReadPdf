@@ -1,12 +1,11 @@
 import streamlit as st
 import os
-import uuid
 import tempfile
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
 from langchain.prompts import ChatPromptTemplate
@@ -28,7 +27,6 @@ class RAGPDFParser:
         )
 
         self.vector_store = None
-        self.persist_directory = "vector_store"
 
     def process_pdf(self, pdf_file):
         try:
@@ -45,10 +43,9 @@ class RAGPDFParser:
             )
             chunks = splitter.split_documents(documents)
 
-            self.vector_store = Chroma.from_documents(
+            self.vector_store = FAISS.from_documents(
                 documents=chunks,
-                embedding=self.embeddings,
-                persist_directory=self.persist_directory
+                embedding=self.embeddings
             )
 
             os.remove(temp_path)
@@ -91,8 +88,8 @@ class RAGPDFParser:
 
 
 def main():
-    st.set_page_config(page_title="PDF RAG App", layout="wide")
-    st.title("📄 PDF Question Answering (RAG)")
+    st.set_page_config(page_title="PDF RAG App (FAISS)", layout="wide")
+    st.title("📄 PDF Question Answering — FAISS RAG")
 
     if "rag_app" not in st.session_state:
         st.session_state.rag_app = RAGPDFParser()
