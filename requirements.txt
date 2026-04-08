@@ -1,10 +1,7 @@
 streamlit
 streamlit_pdf_viewer
-langchain>=0.1.14
-langchain-community>=0.0.28
-langchain-text-splitters
-langchain_experimental
-llama-index
+langchain==0.0.350
+langchain-community
 sentence-transformers
 PyPDF2
 torch
