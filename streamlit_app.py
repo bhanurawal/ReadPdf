@@ -7,7 +7,7 @@ import os
 from sentence_transformers import SentenceTransformer, util
 
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from langchain.chains import RetrievalQA
 from langchain.schema import Document
