@@ -71,22 +71,28 @@ class RAGPDFParser:
         try:
             if not self.vector_store:
                 return "Please upload a PDF document first."
-            
-            # Create retrieval chain
-            qa_chain = RetrievalQA.from_chain_type(
-                llm=self.llm,
-                chain_type="stuff",
-                retriever=self.vector_store.as_retriever(
-                    search_kwargs={"k": 3}
-                )
+    
+            # 1. Create the document-combining chain (equivalent to chain_type='stuff')
+            from langchain.chains.combine_documents import create_stuff_documents_chain
+            doc_chain = create_stuff_documents_chain(self.llm)
+    
+            # 2. Create the retrieval chain
+            from langchain.chains import create_retrieval_chain
+            retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
+    
+            qa_chain = create_retrieval_chain(
+                retriever=retriever,
+                combine_docs_chain=doc_chain
             )
-            
-            # Get answer
-            response = qa_chain.invoke({"query": query})
-            return response["result"]
+    
+            # 3. Invoke the chain
+            response = qa_chain.invoke({"input": query})
+    
+            return response["answer"]
+
         except Exception as e:
             return f"Error generating answer: {str(e)}"
-            
+          
 def split_text(textPdf):
   """
   Split the text content of the given list of Document objects into smaller chunks.
