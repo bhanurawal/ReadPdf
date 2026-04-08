@@ -10,3 +10,4 @@ google-generativeai
 openai>=1.6.1
 langchain_openai
 faiss-cpu
+langchain-text-splitters
