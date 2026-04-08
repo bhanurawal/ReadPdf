@@ -1,5 +1,6 @@
 streamlit
 streamlit_pdf_viewer
+langchain
 langchain_experimental
 llama-index
 sentence-transformers
@@ -11,4 +12,3 @@ openai>=1.6.1
 langchain_openai
 faiss-cpu
 langchain-text-splitters
-langchain
