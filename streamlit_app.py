@@ -9,7 +9,7 @@ from sentence_transformers import SentenceTransformer, util
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from langchain.chains import RetrievalQA
+from langchain_community.chains import RetrievalQA
 from langchain.schema import Document
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
