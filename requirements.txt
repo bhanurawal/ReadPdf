@@ -4,10 +4,10 @@ streamlit_pdf_viewer
 
 
 # LangChain core + ecosystem
-langchain>=0.1.16
-langchain-community>=0.0.34
-langchain-openai>=0.1.3
-langchain-text-splitters>=0.0.1
+langchain
+langchain-community
+langchain-openai
+langchain-text-splitters
 
 # OpenAI
 openai>=1.14.0
@@ -15,7 +15,7 @@ tiktoken>=0.6.0
 
 # Vector store (local, persistent)
 chromadb>=0.4.24
-langchain-chroma>=0.1.0
+langchain-chroma
 faiss-cpu
 
 # Document ingestion
