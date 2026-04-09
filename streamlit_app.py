@@ -7,9 +7,9 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 
-from langchain.schema.runnable import RunnablePassthrough
-from langchain.schema.output_parser import StrOutputParser
-from langchain.prompts import ChatPromptTemplate
+#from langchain.schema.runnable import RunnablePassthrough
+#from langchain.schema.output_parser import StrOutputParser
+#from langchain.prompts import ChatPromptTemplate
 
 OPENAI_API_KEY = os.getenv("API_KEY")
 
