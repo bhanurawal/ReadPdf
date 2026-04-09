@@ -13,7 +13,83 @@ from langchain.prompts import ChatPromptTemplate
 
 OPENAI_API_KEY = os.getenv("API_KEY")
 
+import streamlit as st
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_community.vectorstores import FAISS
+from langchain.chains import RetrievalQA
+import os
 
+# ---------------------------
+# Streamlit UI
+# ---------------------------
+st.set_page_config(page_title="RAG App", layout="wide")
+st.title("📄 Retrieval-Augmented Generation (RAG) with LangChain + Streamlit")
+
+# API Key input (secure)
+openai_api_key = OPENAI_API_KEY
+
+uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+
+# ---------------------------
+# Process PDF and Create Vector Store
+# ---------------------------
+if uploaded_file and openai_api_key:
+    try:
+        # Save uploaded file temporarily
+        temp_pdf_path = f"temp_{uploaded_file.name}"
+        with open(temp_pdf_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+
+        # Load PDF
+        loader = PyPDFLoader(temp_pdf_path)
+        documents = loader.load()
+
+        # Split text into chunks
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        docs = text_splitter.split_documents(documents)
+
+        # Create embeddings
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+
+        # Store in FAISS vector DB
+        vectorstore = FAISS.from_documents(docs, embeddings)
+
+        # Create retriever
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
+        # Create QA chain
+        llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, openai_api_key=openai_api_key)
+        qa_chain = RetrievalQA.from_chain_type(
+            llm=llm,
+            retriever=retriever,
+            return_source_documents=True
+        )
+
+        st.success("✅ PDF processed successfully! You can now ask questions.")
+
+        # ---------------------------
+        # Question Answering
+        # ---------------------------
+        query = st.text_input("Ask a question about the PDF:")
+        if query:
+            with st.spinner("Thinking..."):
+                result = qa_chain.invoke({"query": query})
+                st.markdown(f"**Answer:** {result['result']}")
+
+                # Show sources
+                with st.expander("📚 Sources"):
+                    for i, doc in enumerate(result["source_documents"], start=1):
+                        st.markdown(f"**Source {i}:** {doc.metadata.get('source', 'Unknown')}")
+                        st.write(doc.page_content[:300] + "...")
+
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
+
+
+
+"""
 class RAGPDFParser:
     def __init__(self):
         self.embeddings = OpenAIEmbeddings(
@@ -114,3 +190,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""
