@@ -139,7 +139,7 @@ class RAGPDFParser:
         retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
 
         prompt = ChatPromptTemplate.from_template(
-            """
+            
             You are a helpful assistant.
             Answer the question using only the context below.
 
@@ -148,7 +148,7 @@ class RAGPDFParser:
 
             Question:
             {question}
-            """
+            
         )
 
         rag_chain = (
